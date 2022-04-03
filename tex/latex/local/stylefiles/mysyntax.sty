@@ -1,0 +1,33 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mysyntax}
+% syntax.tex
+% このプリアンブルで実現すること
+% 1. 通常のテキストファイルに執筆するのと同様に書き込むことができるようにする
+% 2. 自作のコマンドを提供することで一部の不具合に対応すること
+
+
+% 1. の実現
+% 空行を開けなくても段落分けできるようにする
+% 本文中、\xobeylinesと書けば、空行をあけなくても段落が変わる
+% \disobeylinesと書けば、空行をあけないと段落が変わらないようになる
+% 併用するパッケージによってはいろいろ弊害が出る場合があるらしい
+% その場合は素直に空行によって段落分けする
+{\catcode`\^^M=\active
+    \gdef\xobeylines{\catcode`\^^M\active \def^^M{\par\leavevmode}}%
+    \global\def^^M{\par\leavevmode}%
+}
+\def\disobeylines{\catcode`\^^M=5 }
+\let\disxobeylines=\disobeylines
+% 本文開始直後から\xobeylinesが適用されるようにする。
+\AtBeginDocument{\xobeylines}
+
+% 行頭のインデントの処理
+% すべて0ptに設定する。
+\parindent=0pt
+
+
+% 2. の実現
+% ！と？の直後の全角空白処理
+% 疑問符などの後に全角空白文字「　」を使ってアキを作ると、疑問符が行末に来たとき空白が行頭に出てしまって都合が悪い。
+% そこで、全角アキは以下のマクロで作る必要がある。
+\newcommand{\zenkakuaki}{\hskip1zw plus .125zw minus 0.03125zw}

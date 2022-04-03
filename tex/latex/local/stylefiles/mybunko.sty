@@ -1,0 +1,119 @@
+% MyBunkoMain.sty
+%     written by ゆに
+% 同人文庫小説のための組版として, 本体に書ききるには冗長だと判断し, sty形式を使ってみたかっただけに作ったスタイルファイル.
+% あまり精査せずとりあえずコードとコメントを呼んで何をやっているのかを理解していただきたい.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mybunko}
+
+% tocloft & titletoc
+\RequirePackage{tocloft, titletoc}
+
+% tikz
+\RequirePackage{tikz}
+\usetikzlibrary{intersections, calc, arrows.meta}
+
+% 各種設定.
+% pagestyle の設定.
+% PageStyle を生成. 今回は NovelStyle というものを作る.
+\NewPageStyle{mynovelstyle}{
+    % フォントは小さめに設定. このあたりの資料がなかったので適当にしてある.
+    font={\small},
+    % ページ番号の前後に全角 1 文字分ぐらいの空白を入れる.
+    nombre={\quad\thepage\quad},
+    % ノンブルと柱の間に全角 1 文字分ぐらいの空白を入れる.
+    gap=1\zw,
+    % 柱の位置を左上に指定. これは奇数ページを見たときの設定で,
+    %     クラスオプションに twoside を指定していれば,
+    %         偶数ページには反転した位置に設定される.
+    running_head_position=top-left,
+    % ノンブルの位置を左上に指定. 柱の位置指定と同様の挙動を示す.
+    nombre_position=top-left,
+    % 奇数ページの柱に出力する内容を指定. 直接文字で打ち込むことはできるが, 
+    %     ひとまずは _chapter で現在表示されている章名を出力させている.
+    odd_running_head={_chapter},
+    % 偶数ページの柱に出力する内容を指定. いろいろと指定はできるが, 
+    %     とりあえずタイトルを入れておく. 適宜変更を施せばよいだろう.
+    even_running_head={_part}
+}
+
+% スタイル生成後の仕様変更
+\ModifyPageStyle{mynovelstyle}{
+    mark_format={
+        % _chapter={第 \thechapter 章 \quad #1} 等変更できる. 
+        _chapter={#1},
+        % _section={節 \thesection: #1}, 等変更できる.
+        _section={#1},
+    }
+}
+
+% 見出しの設定.
+% part の仕様をいじる
+\ModifyHeading{part}{
+    % これで\part*{...} 相当.
+    number=false,
+    % label_format={\hspace*{1\jlreq@gol}},
+    % この辺りはフィーリングで整備してしまったので
+    %     自分でもどういう意図と目的を持っていたのかは不明である...
+    format={\null\vfill {\Huge #1#2}\vfill},
+    % 扉ページのノンブルを非表示にする.
+    pagestyle=empty
+}
+
+% chapter の仕様をいじる
+\ModifyHeading{chapter}{
+    % これで \chapter*{} 相当.
+    number=false,
+    % \chapter{} を打つと必ず偶数ページ始まりになるように設定.
+    pagebreak=begin_with_odd_page
+}
+
+% section の仕様をいじる
+\ModifyHeading{section}{
+    % これで \section*{} 相当
+    number=false
+}
+
+
+% 目次の設定.
+% 目次ページに表示される「目次」の表題に関する変更.
+% 「目次」の文字の上部分にどれほどの空間を開けるかを再定義するコマンド.
+% 今回の場合, 目次の直前にページを一枚挟みたいので, 
+%   \thispagestyle{empty}\clearpage
+% とすることで直前に白紙のページを追加してから目次を開始するように設定.
+% 肝心の目次直上に配置される空白は 30㎜ 分. 文字は LARGE で太字にする.
+\renewcommand{\cfttoctitlefont}{\thispagestyle{empty}\clearpage\hspace*{30mm}\LARGE\bfseries}
+% 目次の下の空白について指定. ここは対して指定することはないので、とりあえず一番下まできっちり空白で埋めて余計な物が入らないようにする.
+\renewcommand{\cftaftertoctitle}{\hfill\null}
+
+% 「目次」の文字の左右にどれほどの空白があくかを再定義するコマンド.
+% 今回は右に 30mm, 左に 20mm 取ってあるが、どういうわけか 30mm のほうは適用される気配はない.
+% とりあえずはこれでいいので放置しておく.
+\renewcommand{\cftbeforetoctitleskip}{30mm}
+\renewcommand{\cftaftertoctitleskip}{20mm}
+
+% 目次に表示される各タイトル, 見出しの設定.
+% part に区分される見出しについて,
+% 字下げ20mm, 太字, part引数(タイトル名), 底から20mm上げた位置にページ番号, ページ番号とpart引数の間は空白で埋める.
+\titlecontents{part}[20mm]{\bfseries}{\thecontenslabel}{}{\hfill\hspace*{20mm}}
+% chapter に区分される見出しについて,
+% 字下げ25mm, 太字, chapter引数(タイトル名), 底から20mm上げた位置にページ番号, ページ番号とpart引数の間は空白で埋める, ページ番号はsansフォントを指定.
+\titlecontents{chapter}[25mm]{}{\large\thecontenslabel}{}{\hfill\textsf{\contentspage}\hspace*{20mm}}
+
+
+% bunko-title
+% 発行年二桁+n次創作(1,2)+短編長編(3,4)+単独合同+(5,6)+発行順番号
+\newcommand{\BunkoTitle}[4]{
+    \begin{tikzpicture}
+        \draw[ultra thick] (0, 0) rectangle (5.0, 4.4);
+        \draw[ultra thick] (0.05, 0.05) rectangle (4.95, 4.35);
+        \draw (0.15, 0.15) rectangle (4.85, 4.25);
+
+        \draw (2.5, 3.5) node[above]{\textbf{\LARGE{#1}}};
+        \draw (2.5, 3) node[above]{#2};
+        \draw (2.5, 2.5) node[above]{\small{#3}};
+        \draw (2.5, 0.7) node[above]{\includegraphics[width=1cm]{}};
+        \draw (1.80, 0.25) node[above]{\small{奇跡文庫}};
+
+        \draw (3.1, 0.27) node[above]{\textsf{\small{#4}}};
+    \end{tikzpicture}
+}

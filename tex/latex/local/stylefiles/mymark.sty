@@ -1,0 +1,20 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mymark}
+
+\RequirePackage{tikz}
+\usetikzlibrary{intersections, calc, arrows.meta}
+
+\newcommand{\doublesun}{
+    \begin{tikzpicture}
+        % 外円
+        \draw[dash dot, very thick] (0,0) circle (1.5cm);
+        % 内円
+        \draw[dash dot, very thick] (0,0) circle (0.5cm);
+        \foreach \angle in 
+            {0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330}
+            {\draw[very thick] (\angle:0.8cm) -- (\angle:2.5cm);}
+        \foreach \angle in
+            {15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345}
+            {\draw[very thick] (\angle:1.0cm) -- (\angle:2.0cm);}
+    \end{tikzpicture}
+}

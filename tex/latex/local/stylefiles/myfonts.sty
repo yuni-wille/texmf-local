@@ -1,0 +1,41 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{myfonts}
+
+\RequirePackage{luatexja-fontspec}
+
+\DeclareOption{default}{
+    % > default
+    \setsansfont[
+        UprightFont = {*},
+        BoldFont = {*},
+        FontFace = {eb}{\shapedefault}{*},
+        Script = Default
+    ]{GenEiNombre}
+
+    \setsansjfont[
+        UprightFont = {*-Regular},
+        BoldFont = {*-Bold},
+        FontFace = {eb}{\shapedefault}{*-Bold},
+        Script = Default
+    ]{HackGenNerd}
+
+    \setmainjfont[
+        UprightFont = {*-Regular},
+        BoldFont = {*-Bold},
+        FontFace = {eb}{\shapedefault}{*-ExtraBold},
+        Script = Default
+    ]{ShipporiMincho}
+}
+
+\DeclareOption{slide}{
+    \setmainjfont[
+        UprightFont = {*-Regular},
+        BoldFont = {*-Bold},
+        FontFace = {eb}{\shapedefault}{*-Bold},
+        Script = Default
+    ]{HackGenNerd}
+}
+
+\ExecuteOptions{default}
+
+\ProcessOptions\relax

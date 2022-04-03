@@ -1,0 +1,17 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{myslide}[2021/10/13]
+
+% > datetime: 日付表示を指定する
+\RequirePackage[yyyymmdd]{datetime}
+
+% beamer settings
+% > outer
+\useoutertheme{mylines}
+% > inner
+\useinnertheme{rectangles}
+% > color
+\usecolortheme[RGB={0,0,0}]{structure}
+% > toc
+\setbeamertemplate{section in toc}[sections numbered]
+% > navigation symbols
+\setbeamertemplate{navigation symbols}{}
