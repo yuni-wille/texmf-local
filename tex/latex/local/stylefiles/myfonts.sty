@@ -3,6 +3,15 @@
 
 \RequirePackage{luatexja-fontspec}
 
+\DeclareOption{slide}{
+    \setmainjfont[
+        UprightFont = {*-Regular},
+        BoldFont = {*-Bold},
+        FontFace = {eb}{\shapedefault}{*-Bold},
+        Script = Default
+    ]{HackGenNerd}
+}
+
 \DeclareOption{default}{
     % > default
     \setsansfont[
@@ -25,15 +34,6 @@
         FontFace = {eb}{\shapedefault}{*-ExtraBold},
         Script = Default
     ]{ShipporiMincho}
-}
-
-\DeclareOption{slide}{
-    \setmainjfont[
-        UprightFont = {*-Regular},
-        BoldFont = {*-Bold},
-        FontFace = {eb}{\shapedefault}{*-Bold},
-        Script = Default
-    ]{HackGenNerd}
 }
 
 \ExecuteOptions{default}
